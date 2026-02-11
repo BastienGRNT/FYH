@@ -10,7 +10,7 @@ $dotenv->safeLoad();
 $router = new Router();
 $router->setBasePath('/');
 
-$setupRoutes = require_once __DIR__ . '/../app/config/routes.php';
+$setupRoutes = require_once __DIR__ . '/../App/Config/routes.php';
 $setupRoutes($router);
 
 $router->run();
