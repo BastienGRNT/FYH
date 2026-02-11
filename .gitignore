@@ -4,6 +4,7 @@
 .env.*.local
 
 # --- Dépendances ---
+**/vendor/
 **/node_modules/
 **/.pub-cache/
 **/.dart_tool/
