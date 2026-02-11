@@ -1,6 +1,29 @@
-composer.phar
-/vendor/
+# --- Environnement et Sécurité ---
+.env
+.env.local
+.env.*.local
 
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
+# --- Dépendances ---
+**/node_modules/
+**/.pub-cache/
+**/.dart_tool/
+
+# --- IDE (JetBrains / VS Code) ---
+.idea/
+.vscode/
+*.swp
+*.iml
+
+# --- Flutter / Mobile ---
+**/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/ios/.generated/
+**/android/.gradle/
+**/*.xcworkspace
+
+# --- Système et Divers ---
+.DS_Store
+Thumbs.db
+**/logs/*.log
+**/temp/*
