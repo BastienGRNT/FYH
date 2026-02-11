@@ -15,12 +15,19 @@ jobs:
         run: |
           sudo chown -R $USER:$USER .
 
-      - name: Install Docker Compose V2
+      - name: Install Docker Compose V2 Manual
         run: |
-          echo "Installation du plugin Docker Compose..."
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
-          # Vérification que ça marche
+          echo "Installation manuelle de Docker Compose V2..."
+          # 1. Créer le dossier des plugins pour l'utilisateur actuel
+          mkdir -p ~/.docker/cli-plugins/
+          
+          # 2. Télécharger la dernière version stable officielle
+          curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+          
+          # 3. Rendre le fichier exécutable
+          chmod +x ~/.docker/cli-plugins/docker-compose
+          
+          # 4. Vérifier que ça marche (doit afficher Docker Compose version v2...)
           docker compose version
 
       - name: Create Environment Files
@@ -37,7 +44,7 @@ jobs:
 
       - name: Build and Start Containers
         run: |
-          # Maintenant, cette commande va fonctionner
+          # Maintenant, la commande avec l'espace va fonctionner grâce au plugin
           docker compose up -d --build --remove-orphans
 
       - name: Install Dependencies
