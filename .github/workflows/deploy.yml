@@ -1,0 +1,55 @@
+name: Deploy to Self-Hosted Runner
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fix Permissions
+        run: |
+          # S'assure que le runner peut manipuler les fichiers du projet
+          sudo chown -R $USER:$USER .
+
+      - name: Create Environment Files
+        run: |
+          # .env racine pour Docker Compose
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" > .env
+          echo "DB_NAME=fyh_db" >> .env
+          echo "DB_USER=fyh_user" >> .env
+          
+          # .env applicatif pour PHP
+          echo "DB_HOST=db" > php/src/.env
+          echo "DB_NAME=fyh_db" >> php/src/.env
+          echo "DB_USER=fyh_user" >> php/src/.env
+          echo "DB_PASS=${{ secrets.DB_PASSWORD }}" >> php/src/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> php/src/.env
+
+      - name: Build and Start Containers
+        run: |
+          # --build force la mise à jour si le Dockerfile a changé
+          # -d lance en arrière-plan (detach)
+          # --remove-orphans nettoie les anciens services si tu changes de nom
+          docker-compose up -d --build --remove-orphans
+
+      - name: Install Dependencies
+        run: |
+          # Installation propre sans supprimer le dossier vendor s'il existe déjà
+          docker exec fyh_php composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Run Database Migrations
+        run: |
+          # Attente de la disponibilité de Postgres (indispensable au 1er déploiement)
+          echo "Waiting for database..."
+          sleep 10
+          docker exec fyh_php php /var/www/html/database/migrate.php
+
+      - name: Cleanup
+        run: |
+          # Supprime les images "dangling" (sans nom) créées par le --build
+          docker image prune -f
