@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: ./php
+    container_name: fyh_php
+    ports:
+      - "1122:80"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=fyh_db
+      - DB_USER=fyh_user
+      - DB_PASS=fyhpassword
+    volumes:
+      - ./php/src:/var/www/html
+    networks:
+      - fyh_network
+
+  db:
+    image: postgres:16-alpine
+    container_name: fyh_db
+    environment:
+      POSTGRES_USER: fyh_user
+      POSTGRES_PASSWORD: fyhpassword
+      POSTGRES_DB: fyh_db
+    ports:
+      - "2211:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - fyh_network
+
+  adminer:
+    image: adminer
+    container_name: fyh_adminer
+    ports:
+      - "1221:8080"
+    depends_on:
+      - db
+    networks:
+      - fyh_network
+
+networks:
+  fyh_network:
+    driver: bridge
+
+volumes:
+  db_data:
