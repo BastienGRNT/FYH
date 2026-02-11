@@ -60,3 +60,9 @@ jobs:
       - name: Cleanup
         run: |
           docker image prune -f
+
+      - name: Fix Permissions After Build
+        if: always()
+        run: |
+          echo "Restoration des permissions..."
+          sudo chown -R $USER:$USER .
