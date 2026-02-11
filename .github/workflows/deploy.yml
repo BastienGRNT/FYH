@@ -32,10 +32,7 @@ jobs:
 
       - name: Build and Start Containers
         run: |
-          # --build force la mise à jour si le Dockerfile a changé
-          # -d lance en arrière-plan (detach)
-          # --remove-orphans nettoie les anciens services si tu changes de nom
-          docker-compose up -d --build --remove-orphans
+          docker compose up -d --build --remove-orphans
 
       - name: Install Dependencies
         run: |
