@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Waiting for database..."
           sleep 10
-          docker exec fyh_php php /var/www/html/database/migrate.php
+          docker exec fyh_php php /var/www/html/App/Database/migrate.php
 
       - name: Cleanup
         run: |
