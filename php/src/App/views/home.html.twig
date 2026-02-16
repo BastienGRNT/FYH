@@ -1,0 +1,35 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1>Prochains Hackathons</h1>
+            <p class="lead">Trouvez l'événement qui va changer votre carrière.</p>
+
+            <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Rechercher un événement...">
+        </div>
+    </div>
+
+    <div class="row" id="hackathon-list">
+        {% for h in hackathons %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ h.photo_url ? h.photo_url : 'https://via.placeholder.com/300x150' }}" class="card-img-top" alt="{{ h.nom }}">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ h.nom }}</h5>
+                        <p class="card-text text-truncate">{{ h.description }}</p>
+                        <p class="text-muted">📅 {{ h.date_event|date("d/m/Y") }}</p>
+                        <p class="fw-bold">{{ h.prix > 0 ? h.prix ~ ' €' : 'Gratuit' }}</p>
+
+                        <a href="/hackathon?id={{ h.id }}" class="btn btn-primary w-100">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">Aucun hackathon prévu pour le moment.</div>
+        {% endfor %}
+    </div>
+{% endblock %}

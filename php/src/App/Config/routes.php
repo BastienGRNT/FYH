@@ -1,8 +1,11 @@
 ﻿<?php
 
+use App\Controllers\HomeController;
+
 return function($router) {
     $router->get('/', function() {
-        echo "Bienvenue sur l'API FYH !!!!";
+        $controller = new HomeController();
+        $controller->index();
     });
 
     $router->get('/test', function() {

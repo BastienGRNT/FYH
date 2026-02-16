@@ -8,7 +8,7 @@
     },
     "require": {
         "php": ">=8.2",
-        "twig/twig": "^3.0",
+        "twig/twig": "^3.23",
         "phpmailer/phpmailer": "^6.9",
         "firebase/php-jwt": "^6.10",
         "bramus/router": "^1.6",
