@@ -77,7 +77,15 @@ class ApiController
 
     public function getAll(): void
     {
-        echo json_encode($this->repo->findAll());
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+
+        if ($page > 0) {
+            echo json_encode($this->repo->findPaginated($page, $limit));
+        } else {
+            // Sinon on renvoie tout (comportement précédent)
+            echo json_encode($this->repo->findAll());
+        }
     }
 
     public function getById(int $id): void
