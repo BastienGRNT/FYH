@@ -35,8 +35,8 @@ class HackathonRepository
 
     public function create(array $data): bool
     {
-        $sql = "INSERT INTO hackathons (nom, description, date_event, prix, latitude, longitude, ville, email_organisateur) 
-                VALUES (:nom, :description, :date_event, :prix, :latitude, :longitude, :ville, :email_organisateur)";
+        $sql = "INSERT INTO hackathons (nom, description, date_event, prix, latitude, longitude, ville, email_organisateur, photo_url) 
+                VALUES (:nom, :description, :date_event, :prix, :latitude, :longitude, :ville, :email_organisateur, :photo_url)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($data);
     }
@@ -46,7 +46,7 @@ class HackathonRepository
         $data['id'] = $id;
         $sql = "UPDATE hackathons SET nom = :nom, description = :description, date_event = :date_event, 
                 prix = :prix, latitude = :latitude, longitude = :longitude, ville = :ville, 
-                email_organisateur = :email_organisateur WHERE id = :id";
+                email_organisateur = :email_organisateur, photo_url = :photo_url WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($data);
     }

@@ -13,40 +13,41 @@
                     <h5 class="mb-0">✏️ {{ title }}</h5>
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="" method="POST" enctype="multipart/form-data">
+
                         <div class="mb-3">
-                            <label class="form-label">Nom de l'événement</label>
-                            <input type="text" class="form-control" name="nom" value="{{ hackathon.nom ?? '' }}" required>
+                            <label for="nomInput" class="form-label">Nom de l'événement</label>
+                            <input type="text" id="nomInput" class="form-control" name="nom" value="{{ hackathon.nom ?? '' }}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" name="description" rows="3" required>{{ hackathon.description ?? '' }}</textarea>
+                            <label for="descInput" class="form-label">Description</label>
+                            <textarea id="descInput" class="form-control" name="description" rows="3" required>{{ hackathon.description ?? '' }}</textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Date</label>
-                                <input type="datetime-local" class="form-control" name="date_event" value="{{ hackathon.date_event ?? '' }}" required>
+                                <label for="dateInput" class="form-label">Date</label>
+                                <input type="datetime-local" id="dateInput" class="form-control" name="date_event" value="{{ hackathon.date_event ?? '' }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Prix (€)</label>
-                                <input type="number" step="0.01" class="form-control" name="prix" value="{{ hackathon.prix ?? '0' }}" required>
+                                <label for="prixInput" class="form-label">Prix (€)</label>
+                                <input type="number" id="prixInput" step="0.01" class="form-control" name="prix" value="{{ hackathon.prix ?? '0' }}" required>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Ville</label>
-                                <input type="text" class="form-control" name="ville" value="{{ hackathon.ville ?? '' }}" required>
+                                <label for="villeInput" class="form-label">Ville</label>
+                                <input type="text" id="villeInput" class="form-control" name="ville" value="{{ hackathon.ville ?? '' }}" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Latitude</label>
-                                <input type="number" step="any" class="form-control" name="latitude" value="{{ hackathon.latitude ?? '' }}" required>
+                                <label for="latInput" class="form-label">Latitude</label>
+                                <input type="number" id="latInput" step="any" class="form-control" name="latitude" value="{{ hackathon.latitude ?? '' }}" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Longitude</label>
-                                <input type="number" step="any" class="form-control" name="longitude" value="{{ hackathon.longitude ?? '' }}" required>
+                                <label for="lngInput" class="form-label">Longitude</label>
+                                <input type="number" id="lngInput" step="any" class="form-control" name="longitude" value="{{ hackathon.longitude ?? '' }}" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Cliquez sur la carte pour placer l'événement</label>
@@ -55,8 +56,21 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">Email Organisateur</label>
-                            <input type="email" class="form-control" name="email_organisateur" value="{{ hackathon.email_organisateur ?? '' }}" required>
+                            <label for="photoInput" class="form-label">Image de l'événement (Optionnel)</label>
+
+                            {% if hackathon.photo_url %}
+                                <div class="mb-2">
+                                    <img src="{{ hackathon.photo_url }}" alt="Image actuelle" style="max-height: 120px; border-radius: 6px; border: 1px solid #ddd;">
+                                    <p class="text-muted small mt-1">Laissez vide pour conserver l'image actuelle.</p>
+                                </div>
+                            {% endif %}
+
+                            <input type="file" id="photoInput" class="form-control" name="photo" accept="image/png, image/jpeg, image/jpg, image/webp">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="emailInput" class="form-label">Email Organisateur</label>
+                            <input type="email" id="emailInput" class="form-control" name="email_organisateur" value="{{ hackathon.email_organisateur ?? '' }}" required>
                         </div>
 
                         <button type="submit" class="btn btn-success w-100">Enregistrer</button>
@@ -84,8 +98,8 @@
             marker = L.marker([startLat, startLng]).addTo(map);
             {% endif %}
 
-            var latInput = document.querySelector('input[name="latitude"]');
-            var lngInput = document.querySelector('input[name="longitude"]');
+            var latInput = document.getElementById('latInput');
+            var lngInput = document.getElementById('lngInput');
 
             map.on('click', function(e) {
                 var lat = e.latlng.lat;

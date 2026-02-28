@@ -47,6 +47,23 @@ class AdminController extends BaseController
         $hackathon = $id ? $repo->findById($id) : null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $photoUrl = $hackathon ? $hackathon->photo_url : null;
+
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
+
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $fileName = uniqid() . '-' . basename($_FILES['photo']['name']);
+                $targetPath = $uploadDir . $fileName;
+
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetPath)) {
+                    $photoUrl = '/uploads/' . $fileName;
+                }
+            }
+
             $data = [
                 ':nom' => $_POST['nom'] ?? '',
                 ':description' => $_POST['description'] ?? '',
@@ -55,7 +72,8 @@ class AdminController extends BaseController
                 ':latitude' => (float)($_POST['latitude'] ?? 0),
                 ':longitude' => (float)($_POST['longitude'] ?? 0),
                 ':ville' => $_POST['ville'] ?? '',
-                ':email_organisateur' => $_POST['email_organisateur'] ?? ''
+                ':email_organisateur' => $_POST['email_organisateur'] ?? '',
+                ':photo_url' => $photoUrl
             ];
 
             if ($id) {

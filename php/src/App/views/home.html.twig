@@ -19,8 +19,8 @@
                     <img src="{{ h.photo_url ? h.photo_url : 'https://via.placeholder.com/300x150' }}" class="card-img-top" alt="{{ h.nom }}">
 
                     <div class="card-body">
-                        <h5 class="card-title">{{ h.nom }}</h5>
-                        <p class="card-text text-truncate">{{ h.description }}</p>
+                        <h5 class="card-title">${escapeHTML(h.nom)}</h5>
+                        <p class="card-text text-truncate">${escapeHTML(h.description)}</p>
                         <p class="text-muted">📅 {{ h.date_event|date("d/m/Y") }}</p>
                         <p class="fw-bold">{{ h.prix > 0 ? h.prix ~ ' €' : 'Gratuit' }}</p>
 
@@ -35,6 +35,18 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const escapeHTML = (str) => {
+                return str.replace(/[&<>'"]/g,
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag] || tag)
+                );
+            };
+
             const searchInput = document.getElementById('search');
             const listContainer = document.getElementById('hackathon-list');
 

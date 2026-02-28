@@ -51,4 +51,18 @@ return function($router) {
     $router->get('/hackathon', function() {
         (new HomeController())->show();
     });
+
+    $router->get('/uploads/(.*)', function($filename) {
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $filename;
+
+        if (file_exists($path)) {
+            $mime = mime_content_type($path);
+            header('Content-Type: ' . $mime);
+            readfile($path);
+            exit;
+        } else {
+            header("HTTP/1.0 404 Not Found");
+            echo "L'image n'est pas trouvée physiquement ici : " . $path;
+        }
+    });
 };
