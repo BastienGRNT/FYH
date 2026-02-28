@@ -1,4 +1,6 @@
-﻿<?php
+<?php
+
+session_start();
 
 use Bramus\Router\Router;
 
@@ -14,3 +16,5 @@ $setupRoutes = require_once __DIR__ . '/../App/Config/routes.php';
 $setupRoutes($router);
 
 $router->run();
+
+
