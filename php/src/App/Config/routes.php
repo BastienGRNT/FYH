@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\ApiController;
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
 use App\Controllers\AdminController;
@@ -64,5 +65,31 @@ return function($router) {
             header("HTTP/1.0 404 Not Found");
             echo "L'image n'est pas trouvée physiquement ici : " . $path;
         }
+    });
+
+    $router->mount('/api', function() use ($router) {
+        $router->post('/login', function() {
+            (new ApiController())->login();
+        });
+
+        $router->get('/hackathons', function() {
+            (new ApiController())->getAll();
+        });
+
+        $router->get('/hackathons/(\d+)', function($id) {
+            (new ApiController())->getById((int)$id);
+        });
+
+        $router->post('/hackathons', function() {
+            (new ApiController())->create();
+        });
+
+        $router->put('/hackathons/(\d+)', function($id) {
+            (new ApiController())->update((int)$id);
+        });
+
+        $router->delete('/hackathons/(\d+)', function($id) {
+            (new ApiController())->delete((int)$id);
+        });
     });
 };

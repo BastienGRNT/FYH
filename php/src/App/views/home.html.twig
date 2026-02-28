@@ -19,8 +19,8 @@
                     <img src="{{ h.photo_url ? h.photo_url : 'https://via.placeholder.com/300x150' }}" class="card-img-top" alt="{{ h.nom }}">
 
                     <div class="card-body">
-                        <h5 class="card-title">${escapeHTML(h.nom)}</h5>
-                        <p class="card-text text-truncate">${escapeHTML(h.description)}</p>
+                        <h5 class="card-title">{{ h.nom }}</h5>
+                        <p class="card-text text-truncate">{{ h.description }}</p>
                         <p class="text-muted">📅 {{ h.date_event|date("d/m/Y") }}</p>
                         <p class="fw-bold">{{ h.prix > 0 ? h.prix ~ ' €' : 'Gratuit' }}</p>
 
@@ -75,8 +75,8 @@
                         <div class="card h-100 shadow-sm">
                             <img src="${img}" class="card-img-top" alt="${h.nom}">
                             <div class="card-body">
-                                <h5 class="card-title">${h.nom}</h5>
-                                <p class="card-text text-truncate">${h.description}</p>
+                                <h5 class="card-title">${escapeHTML(h.nom)}</h5>
+                                <p class="card-text text-truncate">${escapeHTML(h.description)}</p>
                                 <p class="text-muted">📅 ${dateStr}</p>
                                 <p class="fw-bold">${prix}</p>
                                 <a href="/hackathon?id=${h.id}" class="btn btn-primary w-100">Voir détails</a>
