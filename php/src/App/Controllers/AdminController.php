@@ -32,6 +32,11 @@ class AdminController extends BaseController
     public function delete(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                die("Erreur CSRF : Action non autorisée.");
+            }
+
             $repo = new HackathonRepository();
             $repo->delete((int)$_POST['id']);
         }
@@ -47,6 +52,11 @@ class AdminController extends BaseController
         $hackathon = $id ? $repo->findById($id) : null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                die("Erreur CSRF : Action non autorisée.");
+            }
+
             $photoUrl = $hackathon ? $hackathon->photo_url : null;
 
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {

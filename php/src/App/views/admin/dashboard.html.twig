@@ -34,6 +34,7 @@
                             <a href="/admin/hackathon/edit?id={{ h.id }}" class="btn btn-sm btn-warning">Modifier</a>
 
                             <form action="/admin/hackathon/delete" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ h.id }}">
                                 <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
                             </form>

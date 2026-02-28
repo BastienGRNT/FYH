@@ -18,6 +18,8 @@ class BaseController {
             'cache' => false,
             'debug' => true
         ]);
+
+        $this->twig->addGlobal('csrf_token', $_SESSION['csrf_token'] ?? '');
     }
 
     /**
