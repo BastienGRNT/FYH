@@ -29,7 +29,7 @@ class ApiController
     private function checkAuth(): void
     {
         $headers = getallheaders();
-        $authHeader = $headers['Authorization'] ?? '';
+        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
 
         if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
             http_response_code(401);
