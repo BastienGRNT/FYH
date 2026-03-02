@@ -92,16 +92,4 @@ return function($router) {
             (new ApiController())->delete((int)$id);
         });
     });
-
-    $headers = getallheaders();
-    $server = [
-        'HTTP_AUTHORIZATION' => $_SERVER['HTTP_AUTHORIZATION'] ?? 'NON DÉFINI',
-        'REDIRECT_HTTP_AUTHORIZATION' => $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? 'NON DÉFINI',
-    ];
-    
-    echo json_encode([
-        "headers_recus" => $headers,
-        "variables_serveur" => $server
-    ]);
-    
 };
