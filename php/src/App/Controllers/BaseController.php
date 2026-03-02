@@ -31,4 +31,15 @@ class BaseController {
     {
         echo $this->twig->render($template, $data);
     }
+
+    protected function getBearerToken() {
+        $headers = getallheaders();
+    
+        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
 }
