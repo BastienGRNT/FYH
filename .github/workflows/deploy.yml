@@ -31,16 +31,17 @@ jobs:
           docker compose version
 
       - name: Create Environment Files
-        run: |
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" > .env
-          echo "DB_NAME=fyh_db" >> .env
-          echo "DB_USER=fyh_user" >> .env
-          
+        run: |          
           echo "DB_HOST=db" > php/src/.env
           echo "DB_NAME=fyh_db" >> php/src/.env
           echo "DB_USER=fyh_user" >> php/src/.env
           echo "DB_PASS=${{ secrets.DB_PASSWORD }}" >> php/src/.env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> php/src/.env
+
+          echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> php/src/.env
+          echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> php/src/.env
+          echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> php/src/.env
+          echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> php/src/.env
 
       - name: Build and Start Containers
         run: |

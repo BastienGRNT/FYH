@@ -1,9 +1,9 @@
 <?php
 
-use App\Controllers\ApiController;
-use App\Controllers\HomeController;
-use App\Controllers\AuthController;
 use App\Controllers\AdminController;
+use App\Controllers\Api\ApiController;
+use App\Controllers\AuthController;
+use App\Controllers\HomeController;
 
 return function($router) {
     $router->get('/', function() {

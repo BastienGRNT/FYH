@@ -2,19 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Repositories\UserRepository;
-use JetBrains\PhpStorm\NoReturn;
+use App\Models\User;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 class AuthController extends BaseController
 {
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
     public function login(): void
     {
         if (isset($_SESSION['user'])) {
@@ -25,7 +19,6 @@ class AuthController extends BaseController
         $error = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
                 die("Erreur CSRF : Action non autorisée.");
             }
@@ -33,18 +26,17 @@ class AuthController extends BaseController
             $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
             $password = $_POST['password'] ?? '';
 
-            $repo = new UserRepository();
-            $user = $repo->findByEmail($email);
+            $user = User::findByEmail($email);
 
-            if ($user && password_verify($password, $user->password)) {
-                unset($user->password);
+            if ($user && password_verify($password, $user->getPassword())) {
+                $user->setPassword('');
                 $_SESSION['user'] = $user;
 
                 header('Location: /admin/dashboard');
                 exit;
-            } else {
-                $error = "Identifiants incorrects.";
             }
+
+            $error = "Identifiants incorrects.";
         }
 
         $this->render('auth/login.html.twig', [
@@ -53,11 +45,10 @@ class AuthController extends BaseController
         ]);
     }
 
-    #[NoReturn]
     public function logout(): void
     {
         session_destroy();
-        header('Location: /');
+        header('Location: /admin/login');
         exit;
     }
 }

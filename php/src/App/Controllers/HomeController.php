@@ -2,23 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Repositories\HackathonRepository;
-use JetBrains\PhpStorm\NoReturn;
+use App\Models\Hackathon;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class HomeController extends BaseController {
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
+class HomeController extends BaseController
+{
     public function index(): void
     {
-        $repo = new HackathonRepository();
-        $hackathons = $repo->findAll();
+        $hackathons = Hackathon::findAll();
 
         $this->render('home.html.twig', [
             'hackathons' => $hackathons,
@@ -26,23 +19,16 @@ class HomeController extends BaseController {
         ]);
     }
 
-    #[NoReturn]
     public function search(): void
     {
         header('Content-Type: application/json');
 
         $term = $_GET['q'] ?? '';
-        $repo = new HackathonRepository();
 
-        echo json_encode($repo->search($term));
+        echo json_encode(Hackathon::search($term));
         exit;
     }
 
-    /**
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws LoaderError
-     */
     public function show(): void
     {
         if (!isset($_GET['id'])) {
@@ -50,8 +36,7 @@ class HomeController extends BaseController {
             exit;
         }
 
-        $repo = new \App\Repositories\HackathonRepository();
-        $hackathon = $repo->findById((int)$_GET['id']);
+        $hackathon = Hackathon::findById((int)$_GET['id']);
 
         if (!$hackathon) {
             header('Location: /');
@@ -59,8 +44,8 @@ class HomeController extends BaseController {
         }
 
         $this->render('hackathon.html.twig', [
-            'title' => $hackathon->nom,
-            'hackathon' => $hackathon
+            'hackathon' => $hackathon,
+            'title' => $hackathon->getNom()
         ]);
     }
 }
