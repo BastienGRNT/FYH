@@ -26,11 +26,22 @@ class DetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image d'en-tête
             Stack(
               children: [
-                hackathon.photoUrl != null
-                    ? Image.network(hackathon.photoUrl!, height: 300, width: double.infinity, fit: BoxFit.cover)
+                hackathon.photoUrl != null && hackathon.photoUrl!.isNotEmpty
+                    ? Image.network(
+                  hackathon.photoUrl!.startsWith('http')
+                      ? hackathon.photoUrl!
+                      : 'https://fyh.bastiengrnt.fr${hackathon.photoUrl}',
+                  height: 300,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 300,
+                    color: const Color(0xFFDFE6E9),
+                    child: const Icon(Icons.broken_image, color: Colors.grey, size: 50),
+                  ),
+                )
                     : Container(height: 300, color: const Color(0xFFDFE6E9)),
                 Container(
                   height: 300,
@@ -71,7 +82,6 @@ class DetailsScreen extends StatelessWidget {
                   const Text('Localisation', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),
 
-                  // Conteneur de la Carte
                   Container(
                     height: 200,
                     decoration: BoxDecoration(

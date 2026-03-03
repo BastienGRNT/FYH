@@ -38,8 +38,8 @@ class ApiService {
       Uri.parse('$baseUrl/hackathons'),
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json', // Ajoute ceci pour être sûr
-        'Authorization': 'Bearer ${token.trim()}', // trim() pour éviter les espaces invisibles
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token.trim()}',
       },
       body: jsonEncode(data),
     );
