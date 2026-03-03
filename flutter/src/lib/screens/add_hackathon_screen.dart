@@ -109,7 +109,10 @@ class _AddHackathonScreenState extends State<AddHackathonScreen> {
                   String? base64Image;
                   if (_image != null) {
                     final bytes = await File(_image!.path).readAsBytes();
-                    base64Image = base64Encode(bytes);
+                    final extension = _image!.path.split('.').last.toLowerCase();
+                    final mimeType = extension == 'png' ? 'png' : 'jpeg';
+
+                    base64Image = "data:image/$mimeType;base64,${base64Encode(bytes)}";
                   }
 
                   final Map<String, dynamic> data = {

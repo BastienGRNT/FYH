@@ -138,18 +138,30 @@ class ApiController extends BaseApiController
         }
 
         $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
-        $imageParts = explode(";base64,", $data['photo_base64']);
+        $base64String = $data['photo_base64'];
+        $extension = 'png';
 
-        if (count($imageParts) === 2) {
+        if (strpos($base64String, ';base64,') !== false) {
+            $imageParts = explode(";base64,", $base64String);
             $imageTypeAux = explode("image/", $imageParts[0]);
             $extension = $imageTypeAux[1] ?? 'png';
+            $base64String = $imageParts[1];
+        }
 
-            $imageBase64 = base64_decode($imageParts[1]);
-            $filename = uniqid() . '.' . $extension;
+        $imageBase64 = base64_decode($base64String);
 
-            if (file_put_contents($uploadDir . $filename, $imageBase64)) {
-                $hackathon->setPhotoUrl('/uploads/' . $filename);
-            }
+        if ($imageBase64 === false) {
+            return;
+        }
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $filename = uniqid() . '.' . $extension;
+
+        if (file_put_contents($uploadDir . $filename, $imageBase64)) {
+            $hackathon->setPhotoUrl('/uploads/' . $filename);
         }
     }
 }
