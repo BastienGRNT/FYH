@@ -16,7 +16,10 @@
         {% for h in hackathons %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ h.photo_url ? h.photo_url : 'https://via.placeholder.com/300x150' }}" class="card-img-top" alt="{{ h.nom }}">
+                    <img src="{{ h.photo_url ? h.photo_url : 'https://via.placeholder.com/300x150' }}"
+                         class="card-img-top"
+                         alt="{{ h.nom }}"
+                         style="height: 200px; object-fit: cover; width: 100%;">
 
                     <div class="card-body">
                         <h5 class="card-title">{{ h.nom }}</h5>
@@ -52,7 +55,6 @@
 
             searchInput.addEventListener('input', async (e) => {
                 const term = e.target.value;
-
                 try {
                     const response = await fetch(`/search?q=${encodeURIComponent(term)}`);
                     const hackathons = await response.json();
@@ -73,7 +75,7 @@
                         const card = `
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm">
-                            <img src="${img}" class="card-img-top" alt="${h.nom}">
+                            <img src="${img}" class="card-img-top" alt="${h.nom}" style="height: 200px; object-fit: cover; width: 100%;">
                             <div class="card-body">
                                 <h5 class="card-title">${escapeHTML(h.nom)}</h5>
                                 <p class="card-text text-truncate">${escapeHTML(h.description)}</p>

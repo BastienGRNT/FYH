@@ -3,12 +3,18 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <div class="row mt-4">
         <div class="col-md-8 mx-auto">
             <a href="/" class="btn btn-outline-secondary mb-3">← Retour à la liste</a>
 
             <div class="card shadow-sm">
-                <img src="{{ hackathon.photo_url ?: 'https://via.placeholder.com/800x300' }}" class="card-img-top" alt="{{ hackathon.nom }}">
+                <img src="{{ hackathon.photo_url ?: 'https://via.placeholder.com/800x300' }}"
+                     class="card-img-top"
+                     alt="{{ hackathon.nom }}"
+                     style="height: 350px; object-fit: cover; width: 100%;">
 
                 <div class="card-body">
                     <h2 class="card-title">{{ hackathon.nom }}</h2>
@@ -23,6 +29,12 @@
                     <h5>Description du projet</h5>
                     <p class="card-text">{{ hackathon.description|nl2br }}</p>
 
+                    {% if hackathon.latitude and hackathon.longitude %}
+                        <hr>
+                        <h5>Localisation</h5>
+                        <div id="map" style="height: 300px; border-radius: 8px; border: 1px solid #ccc; z-index: 1;"></div>
+                    {% endif %}
+
                     <hr>
 
                     <div class="alert alert-info mt-4">
@@ -32,4 +44,22 @@
             </div>
         </div>
     </div>
+
+    {% if hackathon.latitude and hackathon.longitude %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var lat = {{ hackathon.latitude }};
+                var lng = {{ hackathon.longitude }};
+
+                var map = L.map('map').setView([lat, lng], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+
+                L.marker([lat, lng]).addTo(map)
+                    .bindPopup("<b>{{ hackathon.nom|escape('js') }}</b><br>{{ hackathon.ville|escape('js') }}");
+            });
+        </script>
+    {% endif %}
 {% endblock %}
