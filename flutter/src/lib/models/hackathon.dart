@@ -6,6 +6,8 @@ class Hackathon {
   final double prix;
   final String ville;
   final String? photoUrl;
+  final double? latitude;
+  final double? longitude;
 
   Hackathon({
     required this.id,
@@ -15,6 +17,8 @@ class Hackathon {
     required this.prix,
     required this.ville,
     this.photoUrl,
+    this.latitude,
+    this.longitude,
   });
 
   factory Hackathon.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@ class Hackathon {
       prix: double.parse(json['prix'].toString()),
       ville: json['ville'],
       photoUrl: json['photo_url'],
+      latitude: json['latitude'] != null ? double.parse(json['latitude'].toString()) : null,
+      longitude: json['longitude'] != null ? double.parse(json['longitude'].toString()) : null,
     );
   }
 }
