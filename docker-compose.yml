@@ -5,6 +5,8 @@ services:
     container_name: fyh_php
     ports:
       - "1122:80"
+    env_file:
+      - ./php/src/.env
     environment:
       - DB_HOST=db
       - DB_NAME=fyh_db
