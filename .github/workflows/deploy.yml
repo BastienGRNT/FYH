@@ -67,3 +67,7 @@ jobs:
         run: |
           echo "Restoration des permissions..."
           sudo chown -R $USER:$USER .
+          # Création du dossier uploads s'il n'existe pas
+          mkdir -p php/src/public/uploads
+          # Autorisation d'écriture pour le conteneur Apache
+          sudo chmod -R 777 php/src/public/uploads
