@@ -75,11 +75,13 @@ class ApiController extends BaseApiController
 
         $data = $this->getRequestData();
         $hackathon = new Hackathon();
-        $this->mapHackathonData($hackathon, $data);
+
+        $hackathon->fill($data);
+        $this->handleBase64Image($hackathon, $data);
 
         if ($hackathon->save()) {
             $emailService = new EmailService();
-            $emailService->sendHackathonConfirmation($hackathon, true);
+            $emailService->sendHackathonConfirmation($hackathon, false);
 
             $this->json(['success' => true, 'id' => $hackathon->getId()], 201);
         }
@@ -98,9 +100,14 @@ class ApiController extends BaseApiController
         }
 
         $data = $this->getRequestData();
-        $this->mapHackathonData($hackathon, $data);
+
+        $hackathon->fill($data);
+        $this->handleBase64Image($hackathon, $data);
 
         if ($hackathon->save()) {
+            $emailService = new EmailService();
+            $emailService->sendHackathonConfirmation($hackathon, true);
+
             $this->json(['success' => true]);
         }
 
@@ -124,17 +131,25 @@ class ApiController extends BaseApiController
         $this->json(['error' => 'Erreur serveur'], 500);
     }
 
-    private function mapHackathonData(Hackathon $hackathon, array $data): void
+    private function handleBase64Image(Hackathon $hackathon, array $data): void
     {
-        $hackathon
-            ->setNom($data['nom'] ?? '')
-            ->setDescription($data['description'] ?? '')
-            ->setDateEvent($data['date_event'] ?? '')
-            ->setPrix((float)($data['prix'] ?? 0))
-            ->setLatitude((float)($data['latitude'] ?? 0))
-            ->setLongitude((float)($data['longitude'] ?? 0))
-            ->setVille($data['ville'] ?? '')
-            ->setEmailOrganisateur($data['email_organisateur'] ?? '')
-            ->setPhotoUrl($data['photo_url'] ?? null);
+        if (empty($data['photo_base64'])) {
+            return;
+        }
+
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
+        $imageParts = explode(";base64,", $data['photo_base64']);
+
+        if (count($imageParts) === 2) {
+            $imageTypeAux = explode("image/", $imageParts[0]);
+            $extension = $imageTypeAux[1] ?? 'png';
+
+            $imageBase64 = base64_decode($imageParts[1]);
+            $filename = uniqid() . '.' . $extension;
+
+            if (file_put_contents($uploadDir . $filename, $imageBase64)) {
+                $hackathon->setPhotoUrl('/uploads/' . $filename);
+            }
+        }
     }
 }

@@ -78,6 +78,24 @@ class Hackathon implements JsonSerializable
         ];
     }
 
+    public function fill(array $data): self
+    {
+        $this->setNom($data['nom'] ?? $this->nom)
+            ->setDescription($data['description'] ?? $this->description)
+            ->setDateEvent($data['date_event'] ?? $this->date_event)
+            ->setPrix(isset($data['prix']) ? (float)$data['prix'] : $this->prix)
+            ->setLatitude(isset($data['latitude']) ? (float)$data['latitude'] : $this->latitude)
+            ->setLongitude(isset($data['longitude']) ? (float)$data['longitude'] : $this->longitude)
+            ->setVille($data['ville'] ?? $this->ville)
+            ->setEmailOrganisateur($data['email_organisateur'] ?? $this->email_organisateur);
+
+        if (isset($data['photo_url'])) {
+            $this->setPhotoUrl($data['photo_url']);
+        }
+
+        return $this;
+    }
+
     public static function findAll(): array
     {
         $db = Database::getInstance()->getConnection();

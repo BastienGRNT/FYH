@@ -56,14 +56,7 @@ class AdminController extends BaseController
                 die("Erreur CSRF : Action non autorisée.");
             }
 
-            $hackathon->setNom($_POST['nom'] ?? '')
-                ->setDescription($_POST['description'] ?? '')
-                ->setDateEvent($_POST['date_event'] ?? '')
-                ->setPrix((float)($_POST['prix'] ?? 0))
-                ->setLatitude((float)($_POST['latitude'] ?? 0))
-                ->setLongitude((float)($_POST['longitude'] ?? 0))
-                ->setVille($_POST['ville'] ?? '')
-                ->setEmailOrganisateur($_POST['email_organisateur'] ?? '');
+            $hackathon->fill($_POST);
 
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
