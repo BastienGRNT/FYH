@@ -5,6 +5,7 @@ namespace App\Controllers\Api;
 use App\Models\Hackathon;
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\EmailService;
 use Exception;
 
 class ApiController extends BaseApiController
@@ -77,6 +78,9 @@ class ApiController extends BaseApiController
         $this->mapHackathonData($hackathon, $data);
 
         if ($hackathon->save()) {
+            $emailService = new EmailService();
+            $emailService->sendHackathonConfirmation($hackathon, true);
+
             $this->json(['success' => true, 'id' => $hackathon->getId()], 201);
         }
 

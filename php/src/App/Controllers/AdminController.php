@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Hackathon;
+use App\Services\EmailService;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -73,6 +74,9 @@ class AdminController extends BaseController
             }
 
             if ($hackathon->save()) {
+                $emailService = new EmailService();
+                $emailService->sendHackathonConfirmation($hackathon, $id !== null);
+
                 header('Location: /admin/dashboard');
                 exit;
             }
