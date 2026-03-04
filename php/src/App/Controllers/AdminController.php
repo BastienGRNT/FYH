@@ -13,7 +13,7 @@ class AdminController extends BaseController
     {
         parent::__construct();
 
-        if (!isset($_SESSION['user'])) {
+        if (!isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'admin') {
             header('Location: /admin/login');
             exit;
         }

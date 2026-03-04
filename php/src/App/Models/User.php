@@ -10,6 +10,7 @@ class User
     private ?int $id = null;
     private string $email = '';
     private string $password = '';
+    private ?string $role = null;
 
     public function __get(string $name)
     {
@@ -57,6 +58,17 @@ class User
         return $this;
     }
 
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): self
+    {
+        $this->role = $role;
+        return $this;
+    }
+
     public static function findByEmail(string $email): ?self
     {
         $db = Database::getInstance()->getConnection();
@@ -72,6 +84,7 @@ class User
         return (new self())
             ->setId($data['id'])
             ->setEmail($data['email'])
-            ->setPassword($data['password']);
+            ->setPassword($data['password'])
+            ->setRole($data['role']);
     }
 }
