@@ -9,8 +9,13 @@ class AuthController extends BaseController
 {
     public function login(): void
     {
-        if (isset($_SESSION['user']) && $_SESSION['user']->getRole() !== 'admin') {
-            header('Location: /admin/dashboard');
+        if (isset($_SESSION['user'])) {
+            if ($_SESSION['user']->getRole() === 'admin') {
+                header('Location: /admin/dashboard');
+                exit;
+            }
+
+            header('Location: /');
             exit;
         }
 
