@@ -41,6 +41,10 @@ return function($router) {
         (new AdminController())->form();
     });
 
+    $router->get('/admin/search', function() {
+        (new AdminController())->search();
+    });
+
     $router->post('/admin/hackathon/edit', function() {
         (new AdminController())->form();
     });

@@ -80,4 +80,20 @@ class AdminController extends BaseController
             'hackathon' => $hackathon
         ]);
     }
+
+    public function search(): void
+    {
+        header('Content-Type: application/json');
+
+        $query = isset($_GET['q']) ? trim($_GET['q']) : '';
+
+        if (empty($query)) {
+            echo json_encode(Hackathon::findAll());
+            return;
+        }
+
+        $hackathons = Hackathon::search($query);
+
+        echo json_encode($hackathons);
+    }
 }
