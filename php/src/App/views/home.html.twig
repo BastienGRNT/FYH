@@ -3,13 +3,12 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <div class="row mb-4">
-        <div class="col-12 text-center">
-            <h1>Prochains Hackathons</h1>
-            <p class="lead">Trouvez l'événement qui va changer votre carrière.</p>
+    <div class="col-12 text-center">
+        <h1>Prochains Hackathons</h1>
+        <p class="lead">Trouvez l'événement qui va changer votre carrière.</p>
 
-            <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Rechercher un événement...">
-        </div>
+        <label for="search" class="visually-hidden">Rechercher un événement</label>
+        <input type="text" id="search" class="form-control w-50 mx-auto" placeholder="Rechercher un événement...">
     </div>
 
     <div class="row" id="hackathon-list">
