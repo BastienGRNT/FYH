@@ -8,12 +8,19 @@
 
     <div class="row mt-4">
         <div class="col-md-8 mx-auto">
-            <a href="/" class="btn btn-outline-secondary mb-3">← Retour à la liste</a>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="/" class="btn btn-outline-secondary">← Retour à la liste</a>
+                <a href="/hackathon/pdf?id={{ hackathon.id }}" class="btn btn-danger shadow-sm">
+                    Télécharger le récapitulatif (PDF)
+                </a>
+            </div>
 
             <div class="card shadow-sm">
                 <img src="{{ hackathon.photo_url ?: 'https://via.placeholder.com/800x300' }}"
                      class="card-img-top"
                      alt="{{ hackathon.nom }}"
+                     loading="lazy"
                      style="height: 350px; object-fit: cover; width: 100%;">
 
                 <div class="card-body">

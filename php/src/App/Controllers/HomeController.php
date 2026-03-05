@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Hackathon;
+use App\Services\PdfService;
 use Exception;
 use PDOException;
 
@@ -71,6 +72,48 @@ class HomeController extends BaseController
             $this->addFlash('danger', 'Erreur technique lors de la récupération des détails.');
             header('Location: /');
             exit;
+        }
+    }
+
+    public function downloadPdf(): void
+    {
+        if (!isset($_GET['id'])) {
+            header('Location: /');
+            exit;
+        }
+
+        try {
+            $hackathon = \App\Models\Hackathon::findById((int)$_GET['id']);
+
+            if (!$hackathon) {
+                header('Location: /');
+                exit;
+            }
+
+            $pdfImage = $hackathon->getPhotoUrl();
+
+            if ($pdfImage && str_starts_with($pdfImage, '/uploads/')) {
+                $path = $_SERVER['DOCUMENT_ROOT'] . $pdfImage;
+                if (is_file($path)) {
+                    $mime = mime_content_type($path) ?: 'image/jpeg';
+                    $data = file_get_contents($path);
+                    $pdfImage = 'data:' . $mime . ';base64,' . base64_encode($data);
+                } else {
+                    $pdfImage = null;
+                }
+            }
+
+            $html = $this->twig->render('pdf_template.html.twig', [
+                'hackathon' => $hackathon,
+                'pdf_image' => $pdfImage
+            ]);
+
+            $pdfService = new \App\Services\PdfService();
+            $pdfService->generate($html, 'Recap_' . preg_replace('/[^a-zA-Z0-9]/', '_', $hackathon->getNom()));
+
+        } catch (\Exception $e) {
+            error_log("PDF generation error: " . $e->getMessage());
+            die("Erreur critique PDF : " . $e->getMessage());
         }
     }
 }

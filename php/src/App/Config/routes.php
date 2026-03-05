@@ -57,6 +57,10 @@ return function($router) {
         (new HomeController())->show();
     });
 
+    $router->get('/hackathon/pdf', function() {
+        (new HomeController())->downloadPdf();
+    });
+
     $router->get('/uploads/(.*)', function($filename) {
         if (empty(trim($filename)) || str_contains($filename, '..')) {
             header("HTTP/1.0 404 Not Found");

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Pass - {{ hackathon.nom }}</title>
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #222;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .header-table {
+            width: 100%;
+            border-bottom: 1px solid #eaeaea;
+            padding: 30px 40px 20px 40px;
+        }
+        .header-table td {
+            vertical-align: middle;
+        }
+        .title-cell {
+            width: 70%;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            color: #111;
+        }
+        .subtitle {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        .logo-cell {
+            width: 30%;
+            text-align: right;
+        }
+        .header-logo {
+            max-width: 140px;
+            max-height: 70px;
+            object-fit: contain;
+        }
+        .page-container {
+            padding: 40px;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        .info-table td {
+            padding: 10px 0;
+            width: 50%;
+            vertical-align: top;
+        }
+        .label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .value {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #111;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .description {
+            font-size: 13px;
+            color: #444;
+            text-align: justify;
+            line-height: 1.8;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            font-size: 10px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<table class="header-table">
+    <tr>
+        <td class="title-cell">
+            <h1 class="title">{{ hackathon.nom }}</h1>
+            <div class="subtitle">Billet d'accès</div>
+        </td>
+        <td class="logo-cell">
+            {% if pdf_image %}
+                <img src="{{ pdf_image }}"
+                     class="header-logo"
+                     alt="Logo"
+                     loading="lazy">
+            {% endif %}
+        </td>
+    </tr>
+</table>
+
+<div class="page-container">
+    <table class="info-table">
+        <tr>
+            <td>
+                <span class="label">Lieu</span>
+                <span class="value">{{ hackathon.ville }}</span>
+            </td>
+            <td>
+                <span class="label">Date & Heure</span>
+                <span class="value">{{ hackathon.date_event|date("d/m/Y à H:i") }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label">Tarif</span>
+                <span class="value">{{ hackathon.prix > 0 ? hackathon.prix ~ ' €' : 'Gratuit' }}</span>
+            </td>
+            <td>
+                <span class="label">Contact</span>
+                <span class="value">{{ hackathon.email_organisateur }}</span>
+            </td>
+        </tr>
+    </table>
+
+    <h3 class="section-title">À propos du projet</h3>
+    <div class="description">
+        {{ hackathon.description|nl2br }}
+    </div>
+</div>
+
+</body>
+</html>
