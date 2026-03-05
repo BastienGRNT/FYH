@@ -1,0 +1,103 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Comparaison des Hackathons{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+            <h1 class="h2 mb-0">Comparatif des événements</h1>
+            <a href="/" class="text-decoration-none text-muted small">
+                Retour à la liste
+            </a>
+        </div>
+
+        {% if hackathons is empty %}
+            <div class="py-5 text-center border rounded">
+                <p class="text-muted">Aucun hackathon sélectionné.</p>
+                <a href="/" class="btn btn-sm btn-outline-secondary">Sélectionner des événements</a>
+            </div>
+        {% else %}
+            <div class="table-responsive shadow-sm border rounded">
+                <table class="table mb-0 bg-white" style="table-layout: fixed; min-width: 800px;">
+                    <thead>
+                    <tr class="border-bottom">
+                        <th class="p-4 text-secondary fw-normal border-end" style="width: 200px; background-color: #fcfcfc;">Critères</th>
+                        {% for h in hackathons %}
+                            <th class="p-4 text-center">
+                                <div class="text-truncate" title="{{ h.nom }}">{{ h.nom }}</div>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="p-4 fw-medium border-end" style="background-color: #fcfcfc;">Aperçu</td>
+                        {% for h in hackathons %}
+                            <td class="p-3 text-center">
+                                <div class="mx-auto rounded bg-light" style="width: 100%; height: 140px; overflow: hidden;">
+                                    <img src="{{ h.photo_url }}" alt="{{ h.nom }}"
+                                         style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <td class="p-4 fw-medium border-end" style="background-color: #fcfcfc;">Date</td>
+                        {% for h in hackathons %}
+                            <td class="p-4 text-center text-secondary">
+                                {{ h.date_event|date("d/m/Y") }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <td class="p-4 fw-medium border-end" style="background-color: #fcfcfc;">Prix d'entrée</td>
+                        {% for h in hackathons %}
+                            <td class="p-4 text-center">
+                                {% if h.prix > 0 %}
+                                    {{ h.prix }} €
+                                {% else %}
+                                    Gratuit
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <td class="p-4 fw-medium border-end" style="background-color: #fcfcfc;">Description</td>
+                        {% for h in hackathons %}
+                            <td class="p-4 small text-muted">
+                                <div style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5;">
+                                    {{ h.description }}
+                                </div>
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <td class="p-4 border-end" style="background-color: #fcfcfc;"></td>
+                        {% for h in hackathons %}
+                            <td class="p-4 text-center">
+                                <a href="/hackathon?id={{ h.id }}" class="btn btn-dark btn-sm px-4">
+                                    Voir les détails
+                                </a>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .table td, .table th {
+            vertical-align: top;
+            border-top: 1px solid #eee;
+        }
+        .table thead th {
+            border-bottom: 2px solid #eee;
+        }
+    </style>
+{% endblock %}

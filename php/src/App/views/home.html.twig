@@ -6,6 +6,7 @@
     {# Import des scripts délocalisés #}
     <script src="/scripts/escapeHTML.js"></script>
     <script src="/scripts/userSearch.js"></script>
+    <script src="/scripts/dragAndDrop.js"></script>
 
     <div class="col-12 text-center mb-5">
         <h1>Prochains Hackathons</h1>
@@ -18,12 +19,12 @@
     <div class="row" id="hackathon-list">
         {% for h in hackathons %}
             <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="{{ h.photo_url and h.photo_url|length > 10 ? h.photo_url : 'https://via.placeholder.com/300x150' }}"
+                <div class="card h-100 shadow-sm cardDraggable" id="{{ h.id }}">
+                    <img src="{{ h.photo_url }}"
+                         draggable="false"
                          class="card-img-top"
                          alt="{{ h.nom }}"
                          loading="lazy"
-                         onerror="this.src='https://via.placeholder.com/300x150';"
                          style="height: 200px; object-fit: cover; width: 100%;">
 
                     <div class="card-body">
@@ -41,5 +42,11 @@
                 <div class="alert alert-info">Aucun hackathon prévu pour le moment.</div>
             </div>
         {% endfor %}
+    </div>
+
+    <div id="compare-container" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; display: none;">
+        <button id="btn-compare" class="btn btn-success btn-lg shadow-lg rounded-pill px-4">
+            Comparer (<span id="compare-count">0</span>)
+        </button>
     </div>
 {% endblock %}

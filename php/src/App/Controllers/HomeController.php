@@ -116,4 +116,43 @@ class HomeController extends BaseController
             die("Erreur critique PDF : " . $e->getMessage());
         }
     }
+
+    public function compareHackathon()
+    {
+        $idsRaw = $_GET['ids'] ?? '';
+        $ids = explode(',', $idsRaw);
+        if (empty($ids)) {
+            $this->addFlash('warning', 'Aucun hackathon à comparer.');
+            header('Location: /');
+            exit;
+        }
+
+        try {
+            $hackathons = [];
+
+            foreach ($ids as $id) {
+                $h = Hackathon::findById((int)$id);
+
+                if ($h) {
+                    $hackathons[] = $h;
+                }
+            }
+
+            if (empty($hackathons)) {
+                $this->addFlash('info', 'Les hackathons demandés n\'existent plus.');
+                header('Location: /');
+                exit;
+            }
+
+            $this->render('compare_hackathon.html.twig', [
+                'hackathons' => $hackathons,
+                'title' => 'Comparer Hackathons'
+            ]);
+
+        } catch (Exception $e) {
+            $this->addFlash('error', 'Impossible de comparer les hackathons');
+            header('Location: /');
+            exit;
+        }
+    }
 }

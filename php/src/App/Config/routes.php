@@ -61,6 +61,10 @@ return function($router) {
         (new HomeController())->downloadPdf();
     });
 
+    $router->get('/hackatons/compare', function() {
+        (new HomeController())->compareHackathon();
+    });
+
     $router->get('/uploads/(.*)', function($filename) {
         if (empty(trim($filename)) || str_contains($filename, '..')) {
             header("HTTP/1.0 404 Not Found");
