@@ -70,47 +70,69 @@ function createDragZone() {
     const dragZone = document.createElement("div");
     dragZone.setAttribute('id', 'drag-zone');
 
+    const innerZone = document.createElement("div");
+
     dragZone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        e.dataTransfer.dropEffect = "copy"
+        e.dataTransfer.dropEffect = "copy";
     });
 
     Object.assign(dragZone.style, {
         position: 'fixed',
-        top: '-100px',
+        top: '-120px',
         left: '50%',
         transform: 'translateX(-50%) scale(1)',
-        width: '60%',
-        height: '80px',
-        backgroundColor: '#00d2ff',
-        color: 'white',
+        width: '50%',
+        height: '90px',
+        padding: '12px',
+        backgroundColor: '#ffffff',
+        borderRadius: '0 0 16px 16px',
+        boxShadow: '0 15px 35px rgba(0,0,0,0.12)',
+        zIndex: '9999',
+        transition: 'top 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    });
+
+    Object.assign(innerZone.style, {
+        width: '100%',
+        height: '100%',
+        border: '1.5px dashed #d1d5db',
+        borderRadius: '0 0 12px 12px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '0 0 15px 15px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-        zIndex: '9999',
-        transition: 'top 0.5s ease, transform 0.3s ease',
-        fontWeight: 'bold',
-        cursor: 'pointer'
+        color: '#374151',
+        fontSize: '13px',
+        fontWeight: '500',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        pointerEvents: 'none'
     });
 
+    innerZone.innerText = "Glisser ici pour comparer";
+    dragZone.appendChild(innerZone);
+
     dragZone.addEventListener('dragenter', () => {
-        dragZone.style.transform = 'translateX(-50%) scale(1.1)';
-        dragZone.style.backgroundColor = '#00b8e6';
+        dragZone.style.transform = 'translateX(-50%) scale(1.02)';
+        innerZone.style.borderColor = '#00d2ff';
+        innerZone.style.color = '#00d2ff';
+        innerZone.style.backgroundColor = '#f9fafb';
     });
 
     dragZone.addEventListener('dragleave', () => {
         dragZone.style.transform = 'translateX(-50%) scale(1)';
-        dragZone.style.backgroundColor = '#00d2ff';
+        innerZone.style.borderColor = '#d1d5db';
+        innerZone.style.color = '#374151';
+        innerZone.style.backgroundColor = 'transparent';
     });
 
-    dragZone.innerHTML = "Déposez ici pour comparer";
     document.body.appendChild(dragZone);
 
     setTimeout(() => {
         dragZone.style.top = '0';
-    }, 100);
+    }, 50);
 
     return dragZone;
 }
