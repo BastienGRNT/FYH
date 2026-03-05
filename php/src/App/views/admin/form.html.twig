@@ -6,16 +6,18 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <script src="/scripts/userMap.js" defer></script>
+
     <div class="row justify-content-center mt-4">
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">✏️ {{ title }}</h5>
+                    <h5 class="mb-0">{{ title }}</h5>
                 </div>
+
                 <div class="card-body">
                     <form action="" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
                         <div class="mb-3">
                             <label for="nomInput" class="form-label">Nom de l'événement</label>
                             <input type="text" id="nomInput" class="form-control" name="nom" value="{{ hackathon.nom ?? '' }}" required>
@@ -31,6 +33,7 @@
                                 <label for="dateInput" class="form-label">Date</label>
                                 <input type="datetime-local" id="dateInput" class="form-control" name="date_event" value="{{ hackathon.date_event ?? '' }}" required>
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="prixInput" class="form-label">Prix (€)</label>
                                 <input type="number" id="prixInput" step="0.01" class="form-control" name="prix" value="{{ hackathon.prix ?? '0' }}" required>
@@ -42,14 +45,17 @@
                                 <label for="villeInput" class="form-label">Ville</label>
                                 <input type="text" id="villeInput" class="form-control" name="ville" value="{{ hackathon.ville ?? '' }}" required>
                             </div>
+
                             <div class="col-md-4 mb-3">
                                 <label for="latInput" class="form-label">Latitude</label>
                                 <input type="number" id="latInput" step="any" class="form-control" name="latitude" value="{{ hackathon.latitude ?? '' }}" required>
                             </div>
+
                             <div class="col-md-4 mb-3">
                                 <label for="lngInput" class="form-label">Longitude</label>
                                 <input type="number" id="lngInput" step="any" class="form-control" name="longitude" value="{{ hackathon.longitude ?? '' }}" required>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Cliquez sur la carte pour placer l'événement</label>
                                 <div id="map" style="height: 300px; border-radius: 8px; border: 1px solid #ccc;"></div>
@@ -57,6 +63,7 @@
                         </div>
 
                         <div class="mb-4">
+
                             <label for="photoInput" class="form-label">Image de l'événement (Optionnel)</label>
 
                             {% if hackathon.photo_url %}
@@ -65,7 +72,6 @@
                                     <p class="text-muted small mt-1">Laissez vide pour conserver l'image actuelle.</p>
                                 </div>
                             {% endif %}
-
                             <input type="file" id="photoInput" class="form-control" name="photo" accept="image/png, image/jpeg, image/jpg, image/webp">
                         </div>
 
@@ -81,40 +87,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var startLat = {{ hackathon.latitude ?? 46.603354 }};
-            var startLng = {{ hackathon.longitude ?? 1.888334 }};
-            var zoomLevel = {{ hackathon.latitude ? 13 : 5 }};
-
-            var map = L.map('map').setView([startLat, startLng], zoomLevel);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-
-            var marker;
-            {% if hackathon.latitude and hackathon.longitude %}
-            marker = L.marker([startLat, startLng]).addTo(map);
-            {% endif %}
-
-            var latInput = document.getElementById('latInput');
-            var lngInput = document.getElementById('lngInput');
-
-            map.on('click', function(e) {
-                var lat = e.latlng.lat;
-                var lng = e.latlng.lng;
-
-                latInput.value = lat;
-                lngInput.value = lng;
-
-                if (marker) {
-                    marker.setLatLng(e.latlng);
-                } else {
-                    marker = L.marker(e.latlng).addTo(map);
-                }
-            });
-        });
-    </script>
 {% endblock %}

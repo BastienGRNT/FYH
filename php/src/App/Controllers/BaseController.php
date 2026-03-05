@@ -26,6 +26,8 @@ class BaseController {
 
         $this->twig->addGlobal('csrf_token', $_SESSION['csrf_token'] ?? '');
 
+        $this->twig->addGlobal('is_logged_in', isset($_SESSION['user']));
+
         $flashes = $_SESSION['flash'] ?? [];
         $this->twig->addGlobal('flashes', $flashes);
         unset($_SESSION['flash']);

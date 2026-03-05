@@ -24,6 +24,7 @@ class HomeController extends BaseController
         ]);
     }
 
+
     public function search(): void
     {
         header('Content-Type: application/json');

@@ -58,17 +58,24 @@ return function($router) {
     });
 
     $router->get('/uploads/(.*)', function($filename) {
+        if (empty(trim($filename)) || str_contains($filename, '..')) {
+            header("HTTP/1.0 404 Not Found");
+            exit;
+        }
+
         $path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $filename;
 
-        if (file_exists($path)) {
-            $mime = mime_content_type($path);
+        if (is_file($path)) {
+            session_write_close();
+
+            $mime = mime_content_type($path) ?: 'application/octet-stream';
             header('Content-Type: ' . $mime);
             readfile($path);
             exit;
-        } else {
-            header("HTTP/1.0 404 Not Found");
-            echo "L'image n'est pas trouvée physiquement ici : " . $path;
         }
+
+        header("HTTP/1.0 404 Not Found");
+        exit;
     });
 
     $router->mount('/api', function() use ($router) {
