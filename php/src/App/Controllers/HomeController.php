@@ -58,6 +58,8 @@ class HomeController extends BaseController
                 exit;
             }
 
+
+
             $this->render('hackathon.html.twig', [
                 'hackathon' => $hackathon,
                 'title' => $hackathon->getNom()

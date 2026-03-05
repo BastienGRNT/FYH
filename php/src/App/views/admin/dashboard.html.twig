@@ -3,6 +3,15 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="/styles/map.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    {# Scripts externes #}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/scripts/escapeHTML.js"></script>
+    <script src="/scripts/adminMap.js"></script>
+    <script src="/scripts/adminSearch.js"></script>
+
     <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
         <h2>Tableau de bord</h2>
         <div>
@@ -11,110 +20,76 @@
         </div>
     </div>
 
+    <ul class="nav nav-pills mb-4" id="view-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-table" data-bs-toggle="pill" data-bs-target="#panel-table" type="button" role="tab" aria-controls="panel-table" aria-selected="true">
+                Tableau
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-map" data-bs-toggle="pill" data-bs-target="#panel-map" type="button" role="tab" aria-controls="panel-map" aria-selected="false">
+                Carte
+            </button>
+        </li>
+    </ul>
+
     <div class="mb-3">
         <label for="admin-search" class="visually-hidden">Rechercher par nom ou ville</label>
-        <input type="text" id="admin-search" class="form-control w-25" placeholder="Rechercher par nom ou ville...">
+        <input type="text"
+               id="admin-search"
+               class="form-control w-25"
+               placeholder="Rechercher par nom ou ville..."
+               data-token="{{ csrf_token }}">
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-striped align-middle">
-                <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Date</th>
-                    <th>Ville</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-                </thead>
-                <tbody id="hackathon-table-body">
-                {% for h in hackathons %}
-                    <tr>
-                        <td>{{ h.id }}</td>
-                        <td><strong>{{ h.nom }}</strong></td>
-                        <td>{{ h.date_event|date("d/m/Y") }}</td>
-                        <td>{{ h.ville }}</td>
-                        <td class="text-end">
-                            <a href="/admin/hackathon/edit?id={{ h.id }}" class="btn btn-sm btn-warning">Modifier</a>
-
-                            <form action="/admin/hackathon/delete" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                <input type="hidden" name="id" value="{{ h.id }}">
-                                <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center">Aucun hackathon.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const escapeHTML = (str) => {
-                if (!str) return '';
-                return str.replace(/[&<>'"]/g,
-                    tag => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        "'": '&#39;',
-                        '"': '&quot;'
-                    }[tag] || tag)
-                );
-            };
-
-            const searchInput = document.getElementById('admin-search');
-            const tableBody = document.getElementById('hackathon-table-body');
-
-            // Conservation du token CSRF injecté par Twig pour les actions de suppression dynamiques
-            const csrfToken = '{{ csrf_token }}';
-
-            searchInput.addEventListener('input', async (e) => {
-                const term = e.target.value;
-                try {
-                    const response = await fetch(`/admin/search?q=${encodeURIComponent(term)}`);
-                    const hackathons = await response.json();
-
-                    tableBody.innerHTML = '';
-
-                    if (hackathons.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Aucun événement trouvé.</td></tr>';
-                        return;
-                    }
-
-                    hackathons.forEach(h => {
-                        const dateObj = new Date(h.date_event);
-                        const dateStr = dateObj.toLocaleDateString('fr-FR');
-
-                        const row = `
+    <div class="tab-content" id="view-tabs-content">
+        <div class="tab-pane fade show active" id="panel-table" role="tabpanel" aria-labelledby="tab-table" tabindex="0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table class="table table-striped align-middle">
+                        <thead class="table-dark">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Ville</th>
+                            <th scope="col" class="text-end">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="hackathon-table-body">
+                        {% for h in hackathons %}
                             <tr>
-                                <td>${h.id}</td>
-                                <td><strong>${escapeHTML(h.nom)}</strong></td>
-                                <td>${dateStr}</td>
-                                <td>${escapeHTML(h.ville)}</td>
+                                <td>{{ h.id }}</td>
+                                <td><strong>{{ h.nom }}</strong></td>
+                                <td>{{ h.date_event|date("d/m/Y") }}</td>
+                                <td>{{ h.ville }}</td>
                                 <td class="text-end">
-                                    <a href="/admin/hackathon/edit?id=${h.id}" class="btn btn-sm btn-warning">Modifier</a>
+                                    <a href="/admin/hackathon/edit?id={{ h.id }}" class="btn btn-sm btn-warning" aria-label="Modifier {{ h.nom }}">Modifier</a>
+
                                     <form action="/admin/hackathon/delete" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
-                                        <input type="hidden" name="csrf_token" value="${csrfToken}">
-                                        <input type="hidden" name="id" value="${h.id}">
-                                        <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                        <input type="hidden" name="id" value="{{ h.id }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" aria-label="Supprimer {{ h.nom }}">Supprimer</button>
                                     </form>
                                 </td>
                             </tr>
-                        `;
-                        tableBody.insertAdjacentHTML('beforeend', row);
-                    });
-                } catch (error) {
-                    console.error("Erreur AJAX :", error);
-                }
-            });
-        });
-    </script>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Aucun hackathon.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="panel-map" role="tabpanel" aria-labelledby="tab-map" tabindex="0">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div id="hackathon-map" style="height: 600px; width: 100%;" aria-label="Carte interactive des hackathons" role="region"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

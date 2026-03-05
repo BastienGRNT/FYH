@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart'; // N'oublie pas l'import
 import '../models/hackathon.dart';
 import '../services/api_service.dart';
 import 'details_screen.dart';
@@ -21,15 +22,62 @@ class _HomeScreenState extends State<HomeScreen> {
   int _page = 1;
   bool _isLoading = false;
 
+  double? _userLat;
+  double? _userLng;
+  bool _isLocating = false;
+
   @override
   void initState() {
     super.initState();
+    _getPosition();
     _fetchData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8 && !_isLoading) {
         _fetchData();
       }
     });
+  }
+
+  Future<void> _getPosition() async {
+    setState(() => _isLocating = true);
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+        Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high
+        );
+        setState(() {
+          _userLat = position.latitude;
+          _userLng = position.longitude;
+        });
+      }
+    } catch (e) {
+      debugPrint("Erreur localisation: $e");
+    } finally {
+      setState(() => _isLocating = false);
+    }
+  }
+
+  String _getFormattedDistance(double targetLat, double targetLng) {
+    if (_userLat == null || _userLng == null) return "Distance inconnue";
+
+    double distanceInMeters = Geolocator.distanceBetween(
+        _userLat!,
+        _userLng!,
+        targetLat,
+        targetLng
+    );
+
+    if (distanceInMeters < 1000) {
+      return "${distanceInMeters.toStringAsFixed(0)} m";
+    } else {
+      double distanceInKm = distanceInMeters / 1000;
+      return "${distanceInKm.toStringAsFixed(1)} km";
+    }
   }
 
   Future<void> _fetchData() async {
@@ -53,13 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
       _hackathons.clear();
       _isLoading = false;
     });
+    await _getPosition(); // Rafraîchir aussi la position
     await _fetchData();
   }
 
   void _logout() {
-    setState(() {
-      sessionToken = null;
-    });
+    setState(() => sessionToken = null);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Déconnexion réussie')),
     );
@@ -126,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ... (Ta partie Image reste identique) ...
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                       child: h.photoUrl != null && h.photoUrl!.isNotEmpty
@@ -155,8 +203,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFFB2BEC3)),
                               const SizedBox(width: 4),
-                              Text(h.ville, style: const TextStyle(color: Color(0xFFB2BEC3))),
-                              const Spacer(),
+                              Expanded(
+                                child: Text(
+                                  "${h.ville} • ${_getFormattedDistance(h.latitude!, h.longitude!)}",                                  style: const TextStyle(color: Color(0xFFB2BEC3), fontSize: 13),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                               Text(
                                 h.prix > 0 ? '${h.prix.toStringAsFixed(0)} €' : 'Gratuit',
                                 style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF2D3436)),
@@ -178,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF2D3436),
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AddHackathonScreen()),
+          MaterialPageRoute(builder: (context) => const AddHackathonScreen()),
         ),
         child: const Icon(Icons.add, color: Colors.white),
       )

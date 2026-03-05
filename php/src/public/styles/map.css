@@ -1,0 +1,56 @@
+.leaflet-pane .leaflet-tooltip.transparent-tooltip {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff !important;
+    padding: 0 !important;
+}
+
+.leaflet-pane .leaflet-tooltip.transparent-tooltip::before,
+.leaflet-pane .leaflet-tooltip.transparent-tooltip::after {
+    display: none !important;
+}
+
+/* Conteneur principal sans animation */
+.custom-marker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Le point moderne : un cercle avec une bordure prononcée */
+.marker-dot {
+    width: 14px;
+    height: 14px;
+    background-color: #0d6efd;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #0d6efd, 0 2px 4px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+}
+
+.custom-marker:hover .marker-dot {
+    transform: scale(1.2);
+    background-color: #0056b3;
+}
+
+/* Ton Tooltip transparent */
+.leaflet-pane .leaflet-tooltip.transparent-tooltip {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff !important;
+    padding: 0 !important;
+    margin-top: -10px; /* Ajustement pour être juste au dessus du point */
+}
+
+.leaflet-pane .leaflet-tooltip.transparent-tooltip::before {
+    display: none !important;
+}
