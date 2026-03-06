@@ -31,6 +31,19 @@ class ApiController extends BaseApiController
         }
     }
 
+    private function authenticateAdmin(): void
+    {
+        try {
+            $this->authService->verifyAdmin($this->getAuthHeader());
+        } catch (Exception $e) {
+            $code = $e->getCode();
+            $httpCode = (is_numeric($code) && $code >= 400 && $code < 600) ? (int)$code : 401;
+
+            $this->json(['error' => $e->getMessage()], $httpCode);
+            exit;
+        }
+    }
+
     public function login(): void
     {
         try {

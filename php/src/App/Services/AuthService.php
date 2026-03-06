@@ -8,19 +8,25 @@ use Exception;
 
 class AuthService
 {
-    /**
-     * @throws Exception
-     */
-    public function validateToken(?string $authHeader): void
+    public function validateToken(?string $authHeader): object
     {
         if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
             throw new Exception('Token manquant ou mal formaté', 401);
         }
 
         try {
-            JWT::decode($matches[1], new Key($_ENV['JWT_SECRET'], 'HS256'));
+            return JWT::decode($matches[1], new Key($_ENV['JWT_SECRET'], 'HS256'));
         } catch (Exception $e) {
             throw new Exception('Token invalide ou expiré : ' . $e->getMessage(), 401);
+        }
+    }
+
+    public function verifyAdmin(?string $authHeader): void
+    {
+        $decoded = $this->validateToken($authHeader);
+
+        if (!isset($decoded->role) || $decoded->role !== 'admin') {
+            throw new Exception('Accès refusé : privilèges insuffisants', 403);
         }
     }
 
@@ -30,7 +36,8 @@ class AuthService
             'iat' => time(),
             'exp' => time() + (60 * 60 * 2),
             'id' => $user->id,
-            'email' => $user->email
+            'email' => $user->email,
+            'role' => $user->role
         ];
 
         return JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
