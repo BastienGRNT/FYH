@@ -60,7 +60,8 @@ class ApiController extends BaseApiController
             if ($user && password_verify($password, $user->getPassword())) {
                 $token = $this->authService->generateToken((object)[
                     'id' => $user->getId(),
-                    'email' => $user->getEmail()
+                    'email' => $user->getEmail(),
+                    'role' => $user->getRole()
                 ]);
                 $this->json(['token' => $token]);
             }
